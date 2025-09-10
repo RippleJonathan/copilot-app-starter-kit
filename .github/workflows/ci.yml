@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-templates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      - name: Run tests for templates
+        run: |
+          set -e
+          for d in templates/*; do
+            if [ -f "$d/package.json" ]; then
+              echo "=== Testing $d ==="
+              (cd "$d" && if [ -f package-lock.json ]; then npm ci; else npm install; fi && npm test)
+            fi
+          done
+
+  smoke-demo:
+    runs-on: ubuntu-latest
+    needs: test-templates
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      - name: Run smoke demo (non-destructive)
+        run: |
+          ./scripts/smoke_demo.sh auth
+          ./scripts/smoke_demo.sh crud

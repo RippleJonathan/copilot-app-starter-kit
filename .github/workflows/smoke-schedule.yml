@@ -1,0 +1,27 @@
+name: Scheduled Smoke Demo
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # weekly on Sunday UTC
+  workflow_dispatch: {}
+
+jobs:
+  smoke-demo-scheduled:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      - name: Run smoke demo (non-destructive)
+        run: |
+          ./scripts/smoke_demo.sh auth
+          ./scripts/smoke_demo.sh crud

@@ -1,0 +1,8 @@
+{
+  "name": "frontend",
+  "description": "Minimal React frontend scaffold (Vite-like) for demos",
+  "variables": [
+    { "name": "PROJECT_NAME", "prompt": "Project name", "type": "string", "default": "MyFrontendApp" },
+    { "name": "PORT", "prompt": "Dev server port", "type": "number", "default": 5173 }
+  ]
+}

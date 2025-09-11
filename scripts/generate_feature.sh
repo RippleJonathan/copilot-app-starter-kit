@@ -27,21 +27,15 @@ cp -R "$TEMPLATE_DIR" "$DEST"
 
 echo "Copied template $1 -> $DEST"
 
-# If additional vars are passed as KEY=VALUE, convert to JSON and apply
+# If additional vars or flags are passed, call ask_vars.js to compute a JSON object
 if [ "$#" -gt 2 ]; then
+  # shift the first two args (template name and destination) so remaining are KEY=VALUE or flags
   shift 2 || true
-  VARS_JSON="{}"
-  # collect remaining args as KEY=VALUE
-  for kv in "$@"; do
-    k="${kv%%=*}"
-    v="${kv#*=}"
-    # build JSON incrementally
-    if [ "$VARS_JSON" = "{}" ]; then
-      VARS_JSON="{\"$k\":\"$v\"}"
-    else
-      VARS_JSON="${VARS_JSON%}}},\"$k\":\"$v\"}"
-    fi
-  done
+  # ask_vars.js will read the template manifest and produce a JSON object on stdout
+  VARS_JSON="$(node "$(dirname "$0")/ask_vars.js" "$TEMPLATE_DIR" "$@")" || {
+    echo "ask_vars.js failed to produce vars" >&2
+    exit 5
+  }
   # run template_apply.js to replace placeholders
   node "$(dirname "$0")/template_apply.js" "$DEST" "$VARS_JSON"
 fi

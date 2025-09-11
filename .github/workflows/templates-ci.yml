@@ -1,0 +1,59 @@
+name: Template CI
+
+on:
+  push:
+    paths:
+      - 'templates/**'
+      - 'scripts/**'
+      - '.github/workflows/**'
+  pull_request:
+    paths:
+      - 'templates/**'
+      - 'scripts/**'
+      - '.github/workflows/**'
+
+jobs:
+  generate-matrix:
+    name: Build template matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - id: set-matrix
+        run: |
+          node -e "const fs=require('fs');const dirs=fs.readdirSync('templates').filter(f=>fs.statSync('templates/'+f).isDirectory());const obj={include:dirs.map(t=>({template:t}))};console.log(JSON.stringify(obj));" > matrix.json
+          echo "matrix=$(cat matrix.json)" >> $GITHUB_OUTPUT
+
+  test-templates:
+    name: Test templates
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ matrix.template }}-${{ hashFiles('templates/${{ matrix.template }}/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.template }}-
+
+      - name: Run template tests
+        env:
+          TEMPLATE: ${{ matrix.template }}
+        run: |
+          node scripts/ci_test_template.js "$TEMPLATE"

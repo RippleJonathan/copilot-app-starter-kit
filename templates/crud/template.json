@@ -1,0 +1,26 @@
+{
+  "name": "crud",
+  "description": "Minimal CRUD scaffold for a resource",
+  "variables": [
+    {
+      "name": "PROJECT_NAME",
+      "prompt": "Project name",
+      "type": "string",
+      "default": "MyCrudApp"
+    },
+    {
+      "name": "RESOURCE_NAME",
+      "prompt": "Resource name (singular, e.g., task)",
+      "type": "string",
+      "default": "item"
+    },
+    {
+      "name": "DB_CHOICE",
+      "prompt": "Database choice (none/sqlite/postgres)",
+  "type": "string",
+  "choices": ["none", "sqlite", "postgres"],
+  "default": "sqlite",
+  "required": false
+    }
+  ]
+}

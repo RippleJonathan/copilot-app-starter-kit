@@ -7,6 +7,29 @@ on:
     branches: [ main ]
 
 jobs:
+  manifest-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install root dev dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+      - name: Validate template manifests
+        run: |
+          set -e
+          for d in templates/*; do
+            if [ -f "$d/template.json" ]; then
+              echo "Validating $d/template.json"
+              node scripts/ask_vars.js "$d" --defaults >/dev/null
+            fi
+          done
+
+  # end manifest-lint
+
   test-templates:
     runs-on: ubuntu-latest
     steps:

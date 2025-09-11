@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Template manifest schema",
+  "type": "object",
+  "required": ["name"],
+  "properties": {
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "prompt": { "type": "string" },
+          "type": { "type": "string", "enum": ["string", "boolean", "number"] },
+          "default": {},
+          "choices": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Optional list of choices to present for the variable"
+          },
+          "secret": { "type": "boolean", "description": "If true, prompt should hide input" },
+          "required": { "type": "boolean", "description": "If true, value must be provided or have no default" }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

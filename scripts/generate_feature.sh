@@ -27,23 +27,53 @@ cp -R "$TEMPLATE_DIR" "$DEST"
 
 echo "Copied template $1 -> $DEST"
 
-# If additional vars are passed as KEY=VALUE, convert to JSON and apply
-if [ "$#" -gt 2 ]; then
-  shift 2 || true
-  VARS_JSON="{}"
-  # collect remaining args as KEY=VALUE
-  for kv in "$@"; do
-    k="${kv%%=*}"
-    v="${kv#*=}"
-    # build JSON incrementally
-    if [ "$VARS_JSON" = "{}" ]; then
-      VARS_JSON="{\"$k\":\"$v\"}"
+MANIFEST="$TEMPLATE_DIR/template.json"
+VARS_JSON="{}"
+if [ -f "$MANIFEST" ]; then
+  # call ask_vars.js which will prompt for missing values or return defaults.
+  # To avoid blocking in CI or scripted runs, default to non-interactive
+  # mode (use --defaults) unless the user explicitly provides --interactive.
+  if [ "$#" -gt 2 ]; then
+    shift 2 || true
+    # detect explicit --interactive flag in the remaining args
+    INTERACTIVE=false
+    for a in "$@"; do
+      if [ "$a" = "--interactive" ]; then
+        INTERACTIVE=true
+        break
+      fi
+    done
+    if [ "$INTERACTIVE" = true ]; then
+      ARGS="$@"
     else
-      VARS_JSON="${VARS_JSON%}}},\"$k\":\"$v\"}"
+      ARGS="$@ --defaults"
     fi
-  done
+  else
+    # no extra args: run in non-interactive default mode so the generator
+    # doesn't hang waiting for stdin when used in scripts or CI.
+    ARGS="--defaults"
+  fi
+
+  # ask_vars.js expects the template directory path and optional KEY=VALUE pairs
+  VARS_JSON=$(node "$(dirname "$0")/ask_vars.js" "$TEMPLATE_DIR" $ARGS)
   # run template_apply.js to replace placeholders
   node "$(dirname "$0")/template_apply.js" "$DEST" "$VARS_JSON"
+else
+  # fallback: convert CLI KEY=VALUE into JSON if provided
+  if [ "$#" -gt 2 ]; then
+    shift 2 || true
+    VARS_JSON="{}"
+    for kv in "$@"; do
+      k="${kv%%=*}"
+      v="${kv#*=}"
+      if [ "$VARS_JSON" = "{}" ]; then
+        VARS_JSON="{\"$k\":\"$v\"}"
+      else
+        VARS_JSON="${VARS_JSON%}}},\"$k\":\"$v\"}"
+      fi
+    done
+    node "$(dirname "$0")/template_apply.js" "$DEST" "$VARS_JSON"
+  fi
 fi
 
 echo "Next steps:"

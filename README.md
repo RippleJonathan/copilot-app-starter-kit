@@ -3,122 +3,116 @@
 ![CI](https://github.com/RippleJonathan/copilot-app-starter-kit/actions/workflows/ci.yml/badge.svg)
 ![Scheduled Smoke Demo](https://github.com/RippleJonathan/copilot-app-starter-kit/actions/workflows/smoke-schedule.yml/badge.svg)
 
-This is a boilerplate starter kit for building apps with **GitHub Copilot Agent Mode**.  
+> 🚀 **I'm new — start here!** This is a production-ready starter kit for building apps with **GitHub Copilot Agent**. Get from idea to working code in minutes.
 
-✅ Works out-of-the-box with Copilot Agent  
-✅ Guides you through app creation step by step  
-✅ Asks clarifying questions before generating files  
-✅ Supports free & premium feature extensions  
+## What You Can Build Today
 
-
-## Quick Start
-1. Create a new repo from this template.  
-2. Open the repo in **GitHub Codespaces**.  
-3. Enable **Copilot Agent Mode**.  
-4. Tell Copilot:  
-   > "Read `COPILOT_INSTRUCTIONS.md` and help me start building my app."  
-
-
-## Premium Features
-This starter kit is open-source under MIT License.  
-For advanced workflows, premium templates, and paid features, see:  
-👉 [GitHub Marketplace (coming soon)](https://github.com/marketplace)  
-
-
-# Copilot App Starter Kit
-
-This is a boilerplate starter kit for building apps with **GitHub Copilot Agent Mode**.  
-
-✅ Works out-of-the-box with Copilot Agent  
-✅ Guides you through app creation step by step  
-✅ Asks clarifying questions before generating files  
-✅ Supports free & premium feature extensions  
+✅ **Backend APIs** - CRUD services, authentication, database integrations  
+✅ **Frontend Apps** - React components, forms, dashboards  
+✅ **Full-Stack Projects** - End-to-end applications with tests included  
+✅ **Rapid Prototyping** - Scaffold, test, and iterate quickly  
 
 ---
 
-## Quick Start
-1. Create a new repo from this template.  
-2. Open the repo in **GitHub Codespaces** or a compatible devcontainer.  
-3. Enable **Copilot Agent Mode**.  
-4. Tell Copilot:  
-   > "Read `COPILOT_INSTRUCTIONS.md` and help me start building my app."  
-
----
-
-## Autopilot quickstart
-
-Clone this repo, open it in Codespaces or a devcontainer, then use the quickstart prompt from `COPILOT_INSTRUCTIONS.md` to ask Copilot Agent to scaffold features from `/templates`.
-
-See `/templates/prompts.md` for copy-paste prompt templates and `/scripts/generate_feature.sh` to instantiate templates locally.
-
-Using the generator locally
----------------------------
-
-You can instantiate a template locally with `scripts/generate_feature.sh`.
-
-Basic usage:
+## ⚡ Try It Now (3 commands)
 
 ```bash
-./scripts/generate_feature.sh <template-name> <destination-path> [KEY=VALUE ...]
+# 1. Generate a feature (CRUD API example)
+./scripts/generate_feature.sh crud ./my-tasks PROJECT_NAME=TaskManager
+
+# 2. Install and test
+cd ./my-tasks && npm install && npm test
+
+# 3. Start building!
+# Open in your editor and expand from the working foundation
 ```
 
-Examples:
+## 🎯 Get Started (Choose Your Path)
 
+### Option 1: Use with GitHub Copilot Agent (Recommended)
+1. **Create a new repo** from this template
+2. **Open in GitHub Codespaces** 
+3. **Enable Copilot Agent Mode**
+4. **Tell Copilot**: *"Read `COPILOT_INSTRUCTIONS.md` and help me build a [describe your app]"*
+
+### Option 2: Command Line (Direct)
 ```bash
-# generate the auth template into ./features/auth using defaults
-./scripts/generate_feature.sh auth ./features/auth
+# One-line install and generate
+npx copilot-starter-kit crud ./my-feature PROJECT_NAME=MyApp
 
-# generate the crud template and provide a PROJECT_NAME
-./scripts/generate_feature.sh crud ./features/tasks PROJECT_NAME=MyTasksApp
-
-# generate interactively (prompts shown)
+# Or clone and use locally
+git clone [this-repo]
 ./scripts/generate_feature.sh auth ./features/auth --interactive
 ```
 
-Manifest authoring (`template.json`)
-----------------------------------
+### Option 3: Explore Templates First
+```bash
+# See what's available
+ls templates/           # crud, auth, react-frontend, oauth, db-migrations
 
-Each template may include a `template.json` manifest that declares variables the generator should collect.
-The manifest schema is in `templates/schema/template.schema.json` and documented at `templates/schema/README.md`.
+# Try the interactive demo
+./examples/try-now.sh   # Guided walkthrough with cleanup
+```
 
-Key fields for each variable:
+---
 
-- `name` (string, required): variable name (e.g. `PROJECT_NAME`).
-- `prompt` (string): user-facing prompt shown when interactive.
-- `type` (string): `string`, `boolean`, or `number`.
-- `default` (any): default used for non-interactive runs.
-- `choices` (array): optional list of allowed values (presented as a list prompt).
-- `secret` (boolean): hide input when prompting (password-style).
-- `required` (boolean): indicates value must be provided or the manifest should not rely on a default.
+## 🛠️ Available Templates
 
-Example `template.json`:
+| Template | Description | Use Case |
+|----------|-------------|----------|
+| `crud` | REST API with CRUD operations | Task lists, inventory, content management |
+| `auth` | Authentication with JWT | User registration, login, protected routes |
+| `react-frontend` | React app with routing | SPAs, dashboards, admin panels |
+| `oauth` | Social login integration | GitHub/Google sign-in |
+| `db-migrations` | Database schema management | Schema updates, data migrations |
 
+## 📚 Documentation & Examples
+
+- **[Getting Started Guide](docs/GETTING_STARTED.md)** - Comprehensive walkthrough with screenshots
+- **[Copilot Prompts](templates/prompts.md)** - Copy-paste prompts for Copilot Agent
+- **[Template Reference](templates/schema/README.md)** - How to create custom templates
+
+## 🔧 Advanced Usage
+
+### Command Line Generator
+```bash
+# Basic usage
+./scripts/generate_feature.sh <template> <destination> [KEY=VALUE ...]
+
+# Examples
+./scripts/generate_feature.sh crud ./api PROJECT_NAME=TaskAPI
+./scripts/generate_feature.sh react-frontend ./web APP_NAME=TaskUI --interactive
+```
+
+### Creating Custom Templates
+Each template includes a `template.json` manifest:
 ```json
 {
-   "name": "crud",
-   "description": "Minimal CRUD scaffold for a resource",
-   "variables": [
-      { "name": "PROJECT_NAME", "prompt": "Project name", "type": "string", "default": "MyCrudApp" },
-      { "name": "RESOURCE_NAME", "prompt": "Resource name", "type": "string", "default": "item" },
-      { "name": "DB_CHOICE", "prompt": "Database", "choices": ["none","sqlite","postgres"], "default": "sqlite" }
-   ]
+  "name": "my-template",
+  "description": "Custom scaffold",
+  "variables": [
+    { "name": "PROJECT_NAME", "prompt": "Project name", "default": "MyApp" }
+  ]
 }
 ```
 
-Tips
-----
-- Use `--interactive` to get a nicer prompt UI (uses `inquirer` if available).
-- Add `template.json` to your templates so agents and CI can validate and collect variables automatically.
-- Run `npm test` locally to execute template tests and manifest validation.
+## 🚀 Next Steps
 
+1. **Try the demo**: `./examples/try-now.sh`
+2. **Generate your first feature**: Use the commands above or ask Copilot Agent
+3. **Explore templates**: Check out `templates/` for inspiration
+4. **Read the full guide**: [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)
 
-Contributing: see `CONTRIBUTING.md` (not yet added) for how to extend templates and add new feature scaffolds.
+## 🎬 Video Demo
+
+**Coming Soon:** Watch a 2-minute demo showing "Ask Copilot to add X" → generate_feature.sh → npm test workflow.
+
+## Premium Features & Support
+
+This starter kit is **100% open source** under MIT License.  
+For enterprise features, priority support, and custom templates:  
+👉 **[GitHub Marketplace](https://github.com/marketplace)** (coming soon)
 
 ---
 
-## Premium Features
-This starter kit is open-source under MIT License.  
-For advanced workflows, premium templates, and paid features, see:  
-👉 [GitHub Marketplace (coming soon)](https://github.com/marketplace)  
-
----
+**Questions?** Check [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) or open an issue!

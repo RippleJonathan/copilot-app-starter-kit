@@ -1,0 +1,37 @@
+{
+  "name": "db-migrations",
+  "description": "Database schema management with migrations and seeders",
+  "variables": [
+    {
+      "name": "PROJECT_NAME",
+      "prompt": "Project name",
+      "type": "string",
+      "default": "MyDatabaseProject"
+    },
+    {
+      "name": "DB_TYPE",
+      "prompt": "Database type",
+      "type": "string",
+      "choices": ["sqlite", "postgres", "mysql"],
+      "default": "sqlite"
+    },
+    {
+      "name": "DB_NAME",
+      "prompt": "Database name",
+      "type": "string",
+      "default": "app_database"
+    },
+    {
+      "name": "INCLUDE_USERS_TABLE",
+      "prompt": "Include users table?",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "INCLUDE_SEED_DATA",
+      "prompt": "Include sample seed data?",
+      "type": "boolean",
+      "default": true
+    }
+  ]
+}

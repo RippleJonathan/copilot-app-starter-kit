@@ -1,13 +1,37 @@
 {
-  "name": "copilot-app-starter-kit",
-  "version": "0.0.0",
-  "private": true,
+  "name": "copilot-starter-kit",
+  "version": "1.0.0",
+  "description": "Production-ready starter kit for building apps with GitHub Copilot Agent",
+  "private": false,
+  "bin": {
+    "copilot-starter": "./bin/copilot-starter.js",
+    "copilot-starter-kit": "./bin/copilot-starter.js"
+  },
+  "files": [
+    "bin/",
+    "scripts/",
+    "templates/",
+    "README.md"
+  ],
+  "keywords": [
+    "copilot",
+    "github-copilot",
+    "starter-kit",
+    "template",
+    "scaffold",
+    "generator"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RippleJonathan/copilot-app-starter-kit.git"
+  },
   "devDependencies": {
   "ajv": "^8.12.0",
   "jest": "^29.6.1",
   "inquirer": "^9.2.7"
   },
   "scripts": {
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "prepublishOnly": "npm test"
   }
 }

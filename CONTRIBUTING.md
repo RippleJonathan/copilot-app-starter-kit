@@ -25,3 +25,19 @@ PR guidelines
 
 Code style
 - Use Prettier/ESLint where applicable. Keep changes focused and well-documented.
+
+Template manifests and validation
+--------------------------------
+
+When adding a new template under `/templates/<name>` prefer adding a `template.json` manifest to declare variables the generator should collect.
+
+See `templates/schema/README.md` for the manifest schema and examples. To validate your manifest locally run:
+
+```bash
+# from repo root
+node scripts/ask_vars.js templates/<your-template> --defaults
+# or run the Jest manifest tests
+npm test __tests__/manifest.test.js
+```
+
+CI will run manifest validation automatically on PRs via `.github/workflows/ci.yml`.

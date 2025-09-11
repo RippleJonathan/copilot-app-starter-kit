@@ -7,6 +7,79 @@ on:
     branches: [ main ]
 
 jobs:
+  manifest-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install root dev dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+      - name: Validate template manifests
+        run: |
+          set -e
+          for d in templates/*; do
+            if [ -f "$d/template.json" ]; then
+              echo "Validating $d/template.json"
+              node scripts/ask_vars.js "$d" --defaults >/dev/null
+            fi
+          done
+
+  # end manifest-lint
+
+  template-requirements:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check new templates have required files
+        run: |
+          set -e
+          
+          # Get list of changed files in templates directory
+          CHANGED_FILES=$(git diff --name-only origin/main...HEAD | grep "^templates/" || true)
+          
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No template changes detected"
+            exit 0
+          fi
+          
+          echo "Changed template files:"
+          echo "$CHANGED_FILES"
+          
+          # Check for new template directories
+          NEW_TEMPLATES=$(echo "$CHANGED_FILES" | cut -d/ -f1-2 | sort -u | grep "^templates/[^/]*$" || true)
+          
+          for template_dir in $NEW_TEMPLATES; do
+            if [ -d "$template_dir" ] && [ "$template_dir" != "templates/schema" ]; then
+              echo "Checking requirements for $template_dir..."
+              
+              # Check for template.json
+              if [ ! -f "$template_dir/template.json" ]; then
+                echo "❌ Error: $template_dir is missing template.json"
+                echo "All templates must include a manifest file. See templates/schema/template.schema.json"
+                exit 1
+              fi
+              
+              # Check for package.json (indicates it's a runnable template)
+              if [ -f "$template_dir/package.json" ]; then
+                # Check for tests
+                if [ ! -d "$template_dir/__tests__" ] && [ ! -f "$template_dir/test.js" ]; then
+                  echo "❌ Error: $template_dir has package.json but no tests"
+                  echo "Templates with package.json must include tests in __tests__/ directory or test.js file"
+                  exit 1
+                fi
+              fi
+              
+              echo "✅ $template_dir meets requirements"
+            fi
+          done
+
   test-templates:
     runs-on: ubuntu-latest
     steps:
@@ -48,7 +121,14 @@ jobs:
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-
+      - name: Install root dependencies
+        run: npm install
       - name: Run smoke demo (non-destructive)
         run: |
           ./scripts/smoke_demo.sh auth
           ./scripts/smoke_demo.sh crud
+      - name: Test npx wrapper
+        run: |
+          echo "Testing npx wrapper functionality..."
+          node bin/copilot-starter.js --help
+          node bin/copilot-starter.js --list

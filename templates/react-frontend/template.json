@@ -1,0 +1,30 @@
+{
+  "name": "react-frontend",
+  "description": "React frontend application with routing and components",
+  "variables": [
+    {
+      "name": "APP_NAME",
+      "prompt": "Application name",
+      "type": "string",
+      "default": "MyReactApp"
+    },
+    {
+      "name": "APP_TITLE",
+      "prompt": "Application title (display name)",
+      "type": "string",
+      "default": "My React Application"
+    },
+    {
+      "name": "API_BASE_URL",
+      "prompt": "API base URL (if connecting to backend)",
+      "type": "string",
+      "default": "http://localhost:3001"
+    },
+    {
+      "name": "INCLUDE_ROUTER",
+      "prompt": "Include React Router for navigation?",
+      "type": "boolean",
+      "default": true
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "auth",
+  "description": "Minimal authentication scaffold",
+  "variables": [
+    {
+      "name": "PROJECT_NAME",
+      "prompt": "Project name",
+      "type": "string",
+      "default": "MyAuthApp"
+    },
+    {
+      "name": "USE_DB",
+      "prompt": "Use a database? (none/sqlite/postgres)",
+  "type": "string",
+  "choices": ["none", "sqlite", "postgres"],
+  "default": "none",
+  "required": false
+    }
+  ]
+}

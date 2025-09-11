@@ -1,9 +1,20 @@
-This APP is 100% to be a kit for people using GitHub and Copilot agent mode to create an app. any improvements to this app will always keep that in mind and make it easy for the general public to use this to provide natural language and develop an app. Any suggestions made, should further the development of making this app easy to use.
+---
+applyTo: '**'
+---
+This repository is dedicated to being a public-friendly Copilot Agent starter kit: its one and only purpose is to let anyone (including non-developers) say what they want in natural language and receive working, tested scaffolds and clear next steps.
+
+Hard rules (apply to every change):
+- Prioritize ease-of-use for Copilot Agent users and the general public.
+- Keep the generator non-destructive by default (use `--defaults` or temp dirs).
+- Every template must include a `template.json` manifest, a `package.json` (if Node), and at least one test under `__tests__/`.
+- Manifests must conform to `templates/schema/template.schema.json` and pass CI manifest-lint.
+- Use manifest-driven prompting (choices, secret, required) rather than ad-hoc prompts in code.
+- Do not commit secrets or sensitive credentials to the repo.
+- Prefer small, focused commits and open draft PRs for human review before pushing large changes.
 
 # Copilot App Starter Kit – Instructions for Copilot Agent
 
-This file is the **master guide** for GitHub Copilot Agent Mode.  
-It explains how to take user input ("I want my app to…") and turn it into a structured, working application inside this repository.  
+This file is the **master guide** for GitHub Copilot Agent Mode. It explains how to take user input ("I want my app to…") and turn it into a structured, working application inside this repository.
 
 ---
 

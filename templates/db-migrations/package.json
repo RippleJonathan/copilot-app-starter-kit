@@ -1,0 +1,29 @@
+{
+  "name": "{{PROJECT_NAME}}",
+  "version": "1.0.0",
+  "description": "Database migration and seeding system",
+  "main": "index.js",
+  "scripts": {
+    "migrate": "node migrate.js",
+    "seed": "node seed.js",
+    "reset": "node migrate.js --reset && node seed.js",
+    "status": "node migrate.js --status",
+    "test": "jest"
+  },
+  "dependencies": {
+    "sqlite3": "^5.1.6",
+    "pg": "^8.10.0",
+    "mysql2": "^3.3.0",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0"
+  },
+  "keywords": [
+    "database",
+    "migrations",
+    "schema",
+    "seeding",
+    "{{DB_TYPE}}"
+  ]
+}
